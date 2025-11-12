@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8">
+    </head>
+    <body>
+        <table border="1" cellpadding="8">
+            <!-- display headers in users table -->
+            <tr>
+                <td>Name</td>
+                <td>Age</td>
+                <td>Phone Number</td>
+                <td>Security Level</td>
+                <td>Login Password</td>
+            </tr>
+            <!-- loop to display rows and cells in users table -->
+            {% for row in tableData %}
+            <tr>
+                {% for cell in row %}
+                <td>{{ cell }}</td>
+                {% endfor %}
+            </tr>
+            {% endfor %}
+        </table>
+        <!-- link to go back to home page -->
+        <a href="/">Go back to home page</a>
+    </body>
+</html>
