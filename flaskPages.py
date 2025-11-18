@@ -41,20 +41,20 @@ def AddRec():
         errorList = []
         
         # Name validation
-        if not name or len(name) < 1:
+        if not name or len(name) < 1 or name.isspace():
             errorList.append("You can not enter in an empty name")
 
         # Phone validation
-        if not phone or len(phone) < 1:
+        if not phone or len(phone) < 1 or phone.isspace():
             errorList.append("You can not enter in an empty phone number")
         
         # Age validation
         try:
             age_int = int(age)
             if age_int <= 0 or age_int > 121:
-                errorList.append("The age must be a whole number greater than 0 and less than 121")
+                errorList.append("The Age must be a whole number greater than 0 and less than 121")
         except (ValueError, TypeError):
-            errorList.append("The age must be a whole number greater than 0 and less than 121")
+            errorList.append("The Age must be a whole number greater than 0 and less than 121")
         
         # Security validation
         try:
@@ -65,7 +65,7 @@ def AddRec():
             errorList.append("The SecurityLevel must be a numeric between 1 and 3")
         
         # Password validation
-        if not password or len(password) < 1:
+        if not password or len(password) < 1 or password.isspace():
             errorList.append("You can not enter in an empty pwd")
         
         # If there are errors, return to form with errors
@@ -126,4 +126,4 @@ def ContestResults():
 if __name__ == '__main__':
 
     db.create_tables()
-    app.run(host='127.0.0.1', port=5000, debug=True)
+    app.run()
