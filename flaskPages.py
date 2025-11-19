@@ -78,10 +78,6 @@ def AddRec():
     
     else:  # GET request
         return render_template('addRec.html', errors=[])
-        
-       
-    #db.insert_user(name, age, phone, security, password)
-
 
 # if the user goes to the list URL, 
 # http://127.0.0.1:5000/list
@@ -108,7 +104,6 @@ def UsersList():
 # display the Baking Contest Entry Results page
 @app.route('/contestResults')
 def ContestResults():
-
     # connect to the database
     conn = sqlite3.connect('usersAndContest.db')
     cur = conn.cursor()
@@ -124,6 +119,5 @@ def ContestResults():
     return render_template('contestResults.html', tableData = contestResults)
 
 if __name__ == '__main__':
-
     db.create_tables()
     app.run()
