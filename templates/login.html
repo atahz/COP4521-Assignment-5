@@ -1,0 +1,23 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8">
+        <style>
+            input:not([type="submit"])
+            {width: 200px;}
+        </style>
+    </head>
+    <body>
+        {%if error %}
+            <ul style="padding-left: 20px; margin: 20px;">
+                <li>{{ error }}</li>
+            </ul>
+        {% endif %}
+        <h1>Login</h1>
+        <form action="/login" method="POST">
+        <!-- Login Fields-->
+        <input type="text" name="username" size="20"><br>
+        <input type="password" name="password" size="20"><br>
+        <input type = "submit" value="Log in">
+        </form>
+    </body>

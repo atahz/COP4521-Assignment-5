@@ -1,23 +1,59 @@
-from flask import Flask, render_template, request
+from flask import Flask, render_template, request, session, jsonify
 import tables_mods as db
+import errorHandler as err
 import sqlite3
+import os
 app = Flask(__name__)
+
+@app.route('/login', methods=['POST'])
+def DoLogin():
+    try: 
+        user = request.form['username']
+        pwd = request.form['password']
+
+        with sqlite3.connect("usersAndContest.db") as con:
+            con.row_factory = sqlite3.Row
+            cur = con.cursor()
+
+            #sends a query to the database to check for user credentials
+            sql_select_query = """SELECT * FROM Users WHERE Name = ? AND LoginPassword = ?"""
+            row = cur.execute(sql_select_query, (user,pwd)).fetchone()
+
+            if (row != None):
+                session['logged_in'] = True
+                session['name'] = user
+                if int(row['SecurityLevel']) == 1:
+                    session['admin'] = True
+                else:
+                    session['admin'] = False
+                return Home()
+            else:
+                session['logged_in'] = False
+                return render_template('login.html', error="invalid username and/or password!")
+    except Exception as e:
+        con.rollback()
+        #flash("error in insert operation")
+        #return render_template('login.html', error=f"Login error: {e}")
+        
+@app.route("/logout")
+def logout():
+   session['logged_in'] = False
+   session['admin'] = False
+   session['name'] = ""
+   return render_template('login.html')
 
 # if the user goes to the root URL, 
 # http://127.0.0.1:5000/
 # display the home page
 @app.route('/')
 def Home():
-    # display links to other pages
-    # use an unordered list with no bullet points,
-    # no padding, and no margin, for no indentation
-    return '''
-    <ul style="list-style-type: none; padding: 0; margin: 0;">
-        <li><a href="/enternew">Add new Baking Contest User</a></li>
-        <li><a href="/list">List Baking Contest Users</a></li>
-        <li><a href="/contestResults">Baking Contest Entry Results</a></li>
-    </ul>
-    '''
+    if not session.get('logged_in'):
+        return render_template('login.html')
+    else:
+        # display links to other pages
+        # use an unordered list with no bullet points,
+        # no padding, and no margin, for no indentation
+        return render_template('home.html', name=session['name'])
 
 # if the user goes to the enternew URL, 
 # http://127.0.0.1:5000/enternew
@@ -26,47 +62,28 @@ def Home():
 def NewUser():
     return render_template('addNewUser.html')
 
+# if the user goes to the enternew URL, 
+# http://127.0.0.1:5000/enternew
+# display the Add New Baking Contest Item page
+@app.route('/enternewItem')
+def NewContestItem():
+    return render_template('addContestEntry.html')
+
+
 # make sure to have a http://127.0.0.1:5000/addrec
 # page with validation error messages
-@app.route('/addrec', methods=['POST'])
-@app.route('/addRec', methods=['GET', 'POST'])
+@app.route('/addrec', methods=['GET', 'POST'])
 def AddRec():
-    if request.method == 'POST':
+    source = request.form.get('source', '')
+
+    if request.method == 'POST' and source == 'addNewUser':
         name = request.form.get('Name', '').strip()
         age = request.form.get('Age', '')
         phone = request.form.get('Phone', '').strip()
         security = request.form.get('Security', '')
         password = request.form.get('Password', '')
         
-        errorList = []
-        
-        # Name validation
-        if not name or len(name) < 1 or name.isspace():
-            errorList.append("You can not enter in an empty name")
-
-        # Phone validation
-        if not phone or len(phone) < 1 or phone.isspace():
-            errorList.append("You can not enter in an empty phone number")
-        
-        # Age validation
-        try:
-            age_int = int(age)
-            if age_int <= 0 or age_int > 121:
-                errorList.append("The Age must be a whole number greater than 0 and less than 121")
-        except (ValueError, TypeError):
-            errorList.append("The Age must be a whole number greater than 0 and less than 121")
-        
-        # Security validation
-        try:
-            security_int = int(security)
-            if security_int < 1 or security_int > 3:
-                errorList.append("The SecurityLevel must be a numeric between 1 and 3")
-        except (ValueError, TypeError):
-            errorList.append("The SecurityLevel must be a numeric between 1 and 3")
-        
-        # Password validation
-        if not password or len(password) < 1 or password.isspace():
-            errorList.append("You can not enter in an empty pwd")
+        errorList = err.UserErrorHandler(name, age, phone, security, password)
         
         # If there are errors, return to form with errors
         if errorList:
@@ -75,7 +92,22 @@ def AddRec():
         # If no errors, insert the user into the database
         db.insert_user(name, age, phone, security, password)
         return render_template('addRec.html')  # or redirect
-    
+
+    elif request.method == 'POST' and source == 'addContestEntry':
+        name = request.form.get('Name', '').strip()
+        excellentVotes = request.form.get('ExcellentVotes', '')
+        okVotes = request.form.get('OkVotes', '')
+        badVotes = request.form.get('BadVotes', '')
+
+        errorList = err.ContestEntryErrorHandler(name, excellentVotes, okVotes, badVotes)
+
+        if errorList:
+            return render_template('addRec.html', errors=errorList)
+        
+        # If no errors, insert the user into the database
+        db.insert_contest_item(session['name'], name, excellentVotes, okVotes, badVotes)
+        return render_template('addRec.html')  # or redirect
+
     else:  # GET request
         return render_template('addRec.html', errors=[])
 
@@ -120,4 +152,6 @@ def ContestResults():
 
 if __name__ == '__main__':
     db.create_tables()
-    app.run()
+    #for testing
+    app.secret_key = os.urandom(12)
+    app.run(host='127.0.0.1', port='5000', debug=True)

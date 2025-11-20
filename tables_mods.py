@@ -78,3 +78,18 @@ def insert_user(name, age, phone, security, password):
                 (name, age, phone, security, password))
     conn.commit()
     conn.close()
+
+def insert_contest_item(username, name, excellentVotes, okVotes, badVotes):
+    # connect to the database
+    conn = sqlite3.connect('usersAndContest.db')
+    conn.row_factory = sqlite3.Row
+    cur = conn.cursor()
+
+    #get the user uid for foreign key
+    uid = cur.execute("SELECT Uid FROM Users WHERE Name = ?", (username,)).fetchone()
+    uid = uid['Uid']
+    if uid:
+        cur.execute("INSERT INTO Contest (Uid, BakingItemName, NumOfExcellentVotes, NumOfOkVotes, NumOfBadVotes) VALUES (?, ?, ?, ?, ?)",
+                    (uid, name, excellentVotes, okVotes, badVotes))
+    conn.commit()
+    conn.close()

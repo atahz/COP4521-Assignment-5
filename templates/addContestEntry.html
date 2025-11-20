@@ -1,0 +1,21 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8">
+        <style>
+            input:not([type="submit"])
+            {width: 200px;}
+        </style>
+    </head>
+    <body>
+        <h2>Baking Contest User Information</h2>
+        <form action="/addrec" method="POST">
+        <!-- Input fields -->
+        <input type="hidden" name="source" value="addContestEntry">
+        Name of Baking Item:<br><input type="text" name="Name" size="20"><br>
+        Number of Excellent Votes:<br><input type="text" name="ExcellentVotes" size="20"><br>
+        Number of Ok Votes:<br><input type="text" name="OkVotes" size="20" ><br>
+        Number of Bad Votes:<br><input type="text" name="BadVotes" size="20"><br>
+        <input type="submit" value="submit">
+        </form>
+    </body>
