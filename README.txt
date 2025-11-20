@@ -1,7 +1,7 @@
 Name: Atalia Hernandez and Gabriela Rinaldi Silva
 Date: 11/18/2025
-Assignment: 5
-Due Date: 11/20/2025
+Assignment: 6
+Due Date: 11/04/2025
 About this project: This project uses Flask, Python, SQL, and HTML to create a 
 web app with five pages: Home (to go to other pages), Add a New Baking Contest 
 user (to add info and create a new user), List Baking Contest Users (to display
