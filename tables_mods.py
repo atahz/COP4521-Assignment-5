@@ -5,6 +5,10 @@ def create_tables():
     conn = sqlite3.connect('usersAndContest.db')
     cur = conn.cursor()
 
+    # drop existing tables
+    cur.execute('DROP TABLE IF EXISTS Users')
+    cur.execute('DROP TABLE IF EXISTS Contest')
+
     try:
         # create the users table
         cur.execute('''CREATE TABLE Users (
@@ -74,7 +78,7 @@ def insert_user(name, age, phone, security, password):
     # connect to the database
     conn = sqlite3.connect('usersAndContest.db')
     cur = conn.cursor()
-    cur.execute("INSERT INTO users (Name, Age, PhoneNumber, SecurityLevel, LoginPassword) VALUES (?, ?, ?, ?, ?)",
+    cur.execute("INSERT INTO Users (Name, Age, PhoneNumber, SecurityLevel, LoginPassword) VALUES (?, ?, ?, ?, ?)",
                 (name, age, phone, security, password))
     conn.commit()
     conn.close()

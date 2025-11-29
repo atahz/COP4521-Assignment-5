@@ -23,9 +23,11 @@ def DoLogin():
                 session['logged_in'] = True
                 session['name'] = user
                 if int(row['SecurityLevel']) == 1:
+                    session['user'] = True
+                elif int(row['SecurityLevel']) == 2:
+                    session['moderator'] = True
+                elif int(row['SecurityLevel']) == 3:
                     session['admin'] = True
-                else:
-                    session['admin'] = False
                 return Home()
             else:
                 session['logged_in'] = False
@@ -37,10 +39,12 @@ def DoLogin():
         
 @app.route("/logout")
 def logout():
-   session['logged_in'] = False
-   session['admin'] = False
-   session['name'] = ""
-   return render_template('login.html')
+    session['logged_in'] = False
+    session['user'] = False
+    session['moderator'] = False    
+    session['admin'] = False
+    session['name'] = ""
+    return render_template('login.html')
 
 # if the user goes to the root URL, 
 # http://127.0.0.1:5000/
@@ -53,7 +57,14 @@ def Home():
         # display links to other pages
         # use an unordered list with no bullet points,
         # no padding, and no margin, for no indentation
-        return render_template('home.html', name=session['name'])
+
+        # check security level to determine which home page to show
+        if session.get('user'):
+            return render_template('home1.html', name=session['name'])
+        elif session.get('moderator'):
+            return render_template('home2.html', name=session['name'])
+        elif session.get('admin'):
+            return render_template('home3.html', name=session['name'])
 
 # if the user goes to the enternew URL, 
 # http://127.0.0.1:5000/enternew
