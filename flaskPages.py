@@ -28,8 +28,7 @@ def NewUser():
 
 # make sure to have a http://127.0.0.1:5000/addrec
 # page with validation error messages
-@app.route('/addrec', methods=['POST'])
-@app.route('/addRec', methods=['GET', 'POST'])
+@app.route('/addrec', methods=['GET', 'POST'])
 def AddRec():
     if request.method == 'POST':
         name = request.form.get('Name', '').strip()
