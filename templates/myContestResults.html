@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8">
+    </head>
+    <body>
+        <table border="1" cellpadding="8">
+            <!-- display headers in contest table -->
+            <tr>
+                <td>Name Of Baking Item</td>
+                <td>Number of Excellent Votes</td>
+                <td>Number of Ok Votes</td>
+                <td>Number of Bad Votes</td>
+            </tr>
+            <!-- loop to display rows and cells in contest table -->
+            {% for row in tableData %}
+            <tr>
+                {% for cell in row %}
+                <td>{{ cell }}</td>
+                {% endfor %}
+            </tr>
+            {% endfor %}
+        </table>
+        <!-- link to go back to home page -->
+        <a href="/">Go back to home page</a><br><br>
+        <!-- log out link -->
+        <a href="/logout">Log out</a>
+    </body>
+</html>

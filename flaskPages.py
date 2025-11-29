@@ -150,6 +150,25 @@ def ContestResults():
     # render the contestResults.html template
     return render_template('contestResults.html', tableData = contestResults)
 
+# if the user goes to the myContestResults URL, 
+# http://127.0.0.1:5000/myContestResults
+# display the Baking Contest Entry Results page
+@app.route('/myContestResults')
+def MyContestResults():
+    # connect to the database
+    conn = sqlite3.connect('usersAndContest.db')
+    cur = conn.cursor()
+
+    # get contest results from the Contest table
+    cur.execute('SELECT BakingItemName, NumOfExcellentVotes, NumOfOkVotes, NumOfBadVotes FROM Contest WHERE Uid = (SELECT Uid FROM Users WHERE Name = ?)', (session['name'],))
+    myContestResults = cur.fetchall()
+
+    # close the connection
+    conn.close()
+
+    # render the myContestResults.html template
+    return render_template('myContestResults.html', tableData = myContestResults)
+
 if __name__ == '__main__':
     db.create_tables()
     #for testing
