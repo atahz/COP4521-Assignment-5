@@ -79,6 +79,9 @@ def NewUser():
     # check if user is not logged in
     if not session.get('logged_in'):
         return render_template('login.html')
+    # check if user is not admin
+    elif not session.get('admin'):
+        return render_template('pageNotFound.html', name=session['name'])
     else:
         return render_template('addNewUser.html')
 
@@ -104,21 +107,26 @@ def AddRec():
         source = request.form.get('source', '')
 
         if request.method == 'POST' and source == 'addNewUser':
-            name = request.form.get('Name', '').strip()
-            age = request.form.get('Age', '')
-            phone = request.form.get('Phone', '').strip()
-            security = request.form.get('Security', '')
-            password = request.form.get('Password', '')
+            # check if user is not admin
+            if not session.get('admin'):
+                return render_template('pageNotFound.html', name=session['name'])
             
-            errorList = err.UserErrorHandler(name, age, phone, security, password)
-            
-            # If there are errors, return to form with errors
-            if errorList:
-                return render_template('addRec.html', errors=errorList)
-            
-            # If no errors, insert the user into the database
-            db.insert_user(name, age, phone, security, password)
-            return render_template('addRec.html')  # or redirect
+            else:
+                name = request.form.get('Name', '').strip()
+                age = request.form.get('Age', '')
+                phone = request.form.get('Phone', '').strip()
+                security = request.form.get('Security', '')
+                password = request.form.get('Password', '')
+                
+                errorList = err.UserErrorHandler(name, age, phone, security, password)
+                
+                # If there are errors, return to form with errors
+                if errorList:
+                    return render_template('addRec.html', errors=errorList)
+                
+                # If no errors, insert the user into the database
+                db.insert_user(name, age, phone, security, password)
+                return render_template('addRec.html')  # or redirect
 
         elif request.method == 'POST' and source == 'addContestEntry':
             name = request.form.get('Name', '').strip()
@@ -146,6 +154,9 @@ def UsersList():
     # check if user is not logged in
     if not session.get('logged_in'):
         return render_template('login.html')
+    # check if user is not admin or moderator
+    elif not session.get('admin') and not session.get('moderator'):
+        return render_template('pageNotFound.html', name=session['name'])
     else:
         # connect to the database
         conn = sqlite3.connect('usersAndContest.db')
@@ -169,6 +180,9 @@ def ContestResults():
     # check if user is not logged in
     if not session.get('logged_in'):
         return render_template('login.html')
+    # check if user is not admin
+    elif not session.get('admin'):
+        return render_template('pageNotFound.html', name=session['name'])
     else:
         # connect to the database
         conn = sqlite3.connect('usersAndContest.db')
