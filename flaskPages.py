@@ -27,7 +27,7 @@ def DoLogin():
             if (row != None):
                 session['logged_in'] = True
 
-                session['name'] = user
+                session['name'] = user_e
                 if int(row['SecurityLevel']) == 1:
                     session['user'] = True
                 elif int(row['SecurityLevel']) == 2:
@@ -40,8 +40,6 @@ def DoLogin():
                 return render_template('login.html', error="invalid username and/or password!")
     except Exception as e:
         con.rollback()
-        #flash("error in insert operation")
-        #return render_template('login.html', error=f"Login error: {e}")
         
 @app.route("/logout")
 def logout():
@@ -71,11 +69,14 @@ def Home():
 
         # check security level to determine which home page to show
         if session.get('user'):
-            return render_template('home1.html', name=session['name'])
+            name = Encryption.cipher.decrypt(session['name'])
+            return render_template('home1.html', name=name)
         elif session.get('moderator'):
-            return render_template('home2.html', name=session['name'])
+            name = Encryption.cipher.decrypt(session['name'])
+            return render_template('home2.html', name=name)
         elif session.get('admin'):
-            return render_template('home3.html', name=session['name'])
+            name = Encryption.cipher.decrypt(session['name'])
+            return render_template('home3.html', name=name)
 
 # if the user goes to the enternew URL, 
 # http://127.0.0.1:5000/enternew
@@ -241,4 +242,4 @@ def MyContestResults():
 if __name__ == '__main__':
     db.create_tables()
     app.secret_key = os.urandom(12)
-    app.run(host='127.0.0.1', port='5000', debug=True)
+    app.run()

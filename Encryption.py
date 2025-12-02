@@ -1,6 +1,9 @@
-from Cryptodome.Cipher import AES
+# ensure import works on windows and mac/linux
+try:
+    from Cryptodome.Cipher import AES
+except ImportError:
+    from Crypto.Cipher import AES
 import  string,base64
-
 
 class AESCipher(object):
     def __init__(self, key,iv):
@@ -19,18 +22,7 @@ class AESCipher(object):
         decrypted = self.cipher.decrypt(decoded)
         return str(decrypted, 'utf-8')
 
-
-
 key = b'BLhgpCL81fdLBk23HkZp8BgbT913cqt0'
 iv = b'OWFJATh1Zowac2xr'
 
 cipher = AESCipher(key,iv)
-
-"""
-plaintext = b'this is a super important message'
-encrypted = cipher.encrypt(plaintext)
-print('Encrypted:', encrypted)
-
-decrypted = cipher.decrypt(encrypted)
-print('Decrypted:', decrypted)
-"""
