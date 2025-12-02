@@ -3,13 +3,18 @@ import tables_mods as db
 import errorHandler as err
 import sqlite3
 import os
+import Encryption
+
 app = Flask(__name__)
 
 @app.route('/login', methods=['POST'])
 def DoLogin():
     try: 
         user = request.form['username']
+        user_e = str(Encryption.cipher.encrypt(bytes(user, 'utf-8')).decode("utf-8"))
+
         pwd = request.form['password']
+        pwd = str(Encryption.cipher.encrypt(bytes(pwd, 'utf-8')).decode("utf-8"))
 
         with sqlite3.connect("usersAndContest.db") as con:
             con.row_factory = sqlite3.Row
@@ -17,10 +22,11 @@ def DoLogin():
 
             #sends a query to the database to check for user credentials
             sql_select_query = """SELECT * FROM Users WHERE Name = ? AND LoginPassword = ?"""
-            row = cur.execute(sql_select_query, (user,pwd)).fetchone()
+            row = cur.execute(sql_select_query, (user_e,pwd)).fetchone()
 
             if (row != None):
                 session['logged_in'] = True
+
                 session['name'] = user
                 if int(row['SecurityLevel']) == 1:
                     session['user'] = True
@@ -169,8 +175,19 @@ def UsersList():
         # close the connection
         conn.close()
 
+        # Decrypt the encrypted fields before rendering
+        d_usersInfo = ()
+        for user in usersInfo:
+            name, age, phone, security, password = user
+
+            name = Encryption.cipher.decrypt(name)
+            phone = Encryption.cipher.decrypt(phone)
+            password = Encryption.cipher.decrypt(password)
+
+            d_usersInfo += ((name, age, phone, security, password),)
+
         # render the usersList.html template
-        return render_template('usersList.html', tableData = usersInfo)
+        return render_template('usersList.html', tableData = d_usersInfo)
 
 # if the user goes to the contestResults URL, 
 # http://127.0.0.1:5000/contestResults
@@ -223,6 +240,5 @@ def MyContestResults():
 
 if __name__ == '__main__':
     db.create_tables()
-    #for testing
     app.secret_key = os.urandom(12)
     app.run(host='127.0.0.1', port='5000', debug=True)

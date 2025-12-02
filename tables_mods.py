@@ -1,4 +1,5 @@
 import sqlite3
+import Encryption
 
 def create_tables():
     # connect to the database (or create it if it doesn't exist)
@@ -51,13 +52,19 @@ def init_tables():
     cur = conn.cursor()
 
     try:
-        # execute multiple commands to populate the users table
-        cur.executescript('''INSERT INTO Users (Name, Age, PhoneNumber, SecurityLevel, LoginPassword)
-                            VALUES ('Hayley Williams', 36, '555-111-2222', 1, 'test123');
-                            INSERT INTO Users (Name, Age, PhoneNumber, SecurityLevel, LoginPassword)
-                            VALUES ('Chris Isaak', 69, '555-222-3333', 2, 'test456');
-                            INSERT INTO Users (Name, Age, PhoneNumber, SecurityLevel, LoginPassword)
-                            VALUES ('Lana del Rey', 40, '555-333-4444', 3, 'test789');''')
+        # insert default users into the users table to encrypt initial data 
+        insert_user('Hayley Williams', 36, '555-111-2222', 1, 'test123')
+        insert_user('Chris Isaak', 69, '555-222-3333', 2, 'test456')
+        insert_user('Lana del Rey', 40, '555-333-4444', 3, 'test789')
+
+        
+        # # execute multiple commands to populate the users table
+        # cur.executescript('''INSERT INTO Users (Name, Age, PhoneNumber, SecurityLevel, LoginPassword)
+        #                     VALUES ('Hayley Williams', 36, '555-111-2222', 1, 'test123');
+        #                     INSERT INTO Users (Name, Age, PhoneNumber, SecurityLevel, LoginPassword)
+        #                     VALUES ('Chris Isaak', 69, '555-222-3333', 2, 'test456');
+        #                     INSERT INTO Users (Name, Age, PhoneNumber, SecurityLevel, LoginPassword)
+        #                     VALUES ('Lana del Rey', 40, '555-333-4444', 3, 'test789');''')
 
         # execute multiple commands to populate the contest table
         cur.executescript('''INSERT INTO Contest (Uid, BakingItemName, NumOfExcellentVotes, NumOfOkVotes, NumOfBadVotes)
@@ -67,7 +74,7 @@ def init_tables():
                             INSERT INTO Contest (Uid, BakingItemName, NumOfExcellentVotes, NumOfOkVotes, NumOfBadVotes)
                             VALUES (3, 'Banana Bread', 11, 2, 2);''')
 
-        # commit and save changes to database
+        # # commit and save changes to database
         conn.commit()
     except sqlite3.IntegrityError:
         pass
@@ -75,6 +82,12 @@ def init_tables():
     conn.close()
 
 def insert_user(name, age, phone, security, password):
+
+    # Encrypting anme, phone, and password before inserting in the table
+    name = str(Encryption.cipher.encrypt(bytes(name, 'utf-8')).decode("utf-8"))
+    password = str(Encryption.cipher.encrypt(bytes(password, 'utf-8')).decode("utf-8"))
+    phone = str(Encryption.cipher.encrypt(bytes(phone, 'utf-8')).decode("utf-8"))
+
     # connect to the database
     conn = sqlite3.connect('usersAndContest.db')
     cur = conn.cursor()
