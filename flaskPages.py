@@ -55,7 +55,7 @@ def logout():
         return render_template('login.html')
 
 # if the user goes to the root URL, 
-# http://127.0.0.1:5000/
+# http://linprog5.cs.fsu.edu:55555/
 # display the home page
 @app.route('/')
 def Home():
@@ -79,7 +79,7 @@ def Home():
             return render_template('home3.html', name=name)
 
 # if the user goes to the enternew URL, 
-# http://127.0.0.1:5000/enternew
+# http://linprog5.cs.fsu.edu:55555/enternew
 # display the Add New Baking Contest User page
 @app.route('/enternew')
 def NewUser():
@@ -92,8 +92,8 @@ def NewUser():
     else:
         return render_template('addNewUser.html')
 
-# if the user goes to the enternew URL, 
-# http://127.0.0.1:5000/enternew
+# if the user goes to the enternewItem URL, 
+# http://linprog5.cs.fsu.edu:55555/enternewItem
 # display the Add New Baking Contest Item page
 @app.route('/enternewItem')
 def NewContestItem():
@@ -103,7 +103,7 @@ def NewContestItem():
     else:
         return render_template('addContestEntry.html')
 
-# make sure to have a http://127.0.0.1:5000/addrec
+# make sure to have a http://linprog5.cs.fsu.edu:55555/addrec
 # page with validation error messages
 @app.route('/addrec', methods=['GET', 'POST'])
 def AddRec():
@@ -154,7 +154,7 @@ def AddRec():
             return render_template('addRec.html', errors=[])
 
 # if the user goes to the list URL, 
-# http://127.0.0.1:5000/list
+# http://linprog5.cs.fsu.edu:55555/list
 # display the List Baking Contest Users page
 @app.route('/list')
 def UsersList():
@@ -191,7 +191,7 @@ def UsersList():
         return render_template('usersList.html', tableData = d_usersInfo)
 
 # if the user goes to the contestResults URL, 
-# http://127.0.0.1:5000/contestResults
+# http://linprog5.cs.fsu.edu:55555/contestResults
 # display the Baking Contest Entry Results page
 @app.route('/contestResults')
 def ContestResults():
@@ -217,7 +217,7 @@ def ContestResults():
         return render_template('contestResults.html', tableData = contestResults)
 
 # if the user goes to the myContestResults URL, 
-# http://127.0.0.1:5000/myContestResults
+# http://linprog5.cs.fsu.edu:55555/myContestResults
 # display the Baking Contest Entry Results page
 @app.route('/myContestResults')
 def MyContestResults():
@@ -242,4 +242,4 @@ def MyContestResults():
 if __name__ == '__main__':
     db.create_tables()
     app.secret_key = os.urandom(12)
-    app.run()
+    app.run(host='linprog5.cs.fsu.edu', port = 55555)
