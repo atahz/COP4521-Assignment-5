@@ -1,5 +1,5 @@
 Name: Atalia Hernandez and Gabriela Rinaldi Silva
-Date: 12/02/2025
+Date: 12/03/2025
 Assignment: 6
 Due Date: 12/04/2025
 About this project: This project uses Flask, Python, SQLite3, HTML, and
