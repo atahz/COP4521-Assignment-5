@@ -12,7 +12,7 @@ We added a login page, specified the home page a user should see based
 on their security level, and created a page for a user's contest results.
 Moreover, we used Dr. Yuan's logic to encrypt and decrypt the fields
 listed in the rubric.
-Assumptions: Assumes that this is the only process running on port 5000.
+Assumptions: Assumes that this is the only process running on port 55555.
 Assumes that the name, phone number, and login password fields will have
 appropriate values, although we implemented checks to ensure they are not
 empty or do not only contain spaces. Assumes that the user is correctly
