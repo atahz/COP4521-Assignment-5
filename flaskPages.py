@@ -242,4 +242,4 @@ def MyContestResults():
 if __name__ == '__main__':
     db.create_tables()
     app.secret_key = os.urandom(12)
-    app.run(host='linprog5.cs.fsu.edu', port = 55555)
+    app.run(host='127.0.0.1', port = 5000)
