@@ -2,22 +2,44 @@
 <html lang="en">
     <head>
         <meta charset="UTF-8">
-        <style>
-            input:not([type="submit"])
-            {width: 200px;}
-        </style>
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>Login</title>
+        <link rel="stylesheet" href="static/style.css">
+         <!-- Link to the Remix Icon Library -->
+        <link href="https://cdn.jsdelivr.net/npm/remixicon@4.9.0/fonts/remixicon.css"
+        rel="stylesheet"/>
     </head>
     <body>
-        {%if error %}
-            <ul style="padding-left: 20px; margin: 20px;">
+        <div class="wrapper">
+        {% if error %}
+            <ul style="color: red;">
                 <li>{{ error }}</li>
             </ul>
         {% endif %}
-        <h1>Login</h1>
-        <form action="/login" method="POST">
-        <!-- Login Fields-->
-        <input type="text" name="username" size="20"><br>
-        <input type="password" name="password" size="20"><br>
-        <input type = "submit" value="Log in">
-        </form>
+        
+            <form action="/login" method="POST">
+                <h1>Login</h1>
+                
+                <!-- Input fields  -->
+                <div class="input-box">
+                    <input type="text" placeholder="Username" required name="username">
+                    <i class="ri-user-fill"></i>
+                </div>
+                <div class="input-box">
+                    <input type="password" placeholder="Password" required name="password">
+                    <i class="ri-lock-2-fill"></i>
+                </div>
+                
+
+                <div class="remember-forgot">
+                    <label><input type="checkbox"> Remember me</label>
+                    <a href="#">Forgot password?</a> 
+                </div>
+
+                <button type="submit" value="Login" class="btn">Login</button>
+                <div class="register-link">
+                    <p>Don't have an account? <a href="#">Register</a></p>
+                </div>
+            </form>
+        </div>
     </body>
